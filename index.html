@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FZapify</title>
+    
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://rsms.me/">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter var', 'ui-sans-serif', 'system-ui', '-apple-system'],
+                    },
+                    colors: {
+                        'ios-bg': '#f2f2f7',
+                        'ios-card': '#ffffff', 
+                        'ios-text': '#1c1c1e',
+                        'ios-secondary': '#8e8e93',
+                        'ios-border': '#e5e5ea',
+                        'brand-blue': '#007aff',
+                        'brand-indigo': '#5856d6'
+                    },
+                    boxShadow: {
+                        'ios-light': '0 2px 8px rgba(0,0,0,0.06)',
+                        'ios-medium': '0 4px 12px rgba(0,0,0,0.08)',
+                        'ios-inner': 'inset 0 2px 4px rgba(0,0,0,0.06)'
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                        'glass': 'linear-gradient(118deg, rgba(255,255,255,0.8) -2.4%, rgba(255,255,255,0.7) 109.5%)'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
+            .glass-effect {
+                -webkit-backdrop-filter: blur(10px);
+                backdrop-filter: blur(10px);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .animate-pulse-slow {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        /* Modern scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.1);
+            border-radius: 100vh;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(0,0,0,0.2);
+        }
+        
+        /* iOS style switch */
+        .ios-switch {
+            width: 51px;
+            height: 31px;
+            background: #e9e9ea;
+            border-radius: 100px;
+            position: relative;
+            transition: 0.2s;
+        }
+        
+        .ios-switch::after {
+            content: '';
+            position: absolute;
+            width: 27px;
+            height: 27px;
+            border-radius: 50%;
+            background: white;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+            top: 2px;
+            left: 2px;
+            transition: 0.2s;
+        }
+        
+        .ios-switch.active {
+            background: #34c759;
+        }
+        
+        .ios-switch.active::after {
+            transform: translateX(20px);
+        }
+        
+        /* Form input focus states */
+        .form-input:focus {
+            box-shadow: 0 0 0 2px rgba(0,122,255,0.2);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        #info {
+            display: none;
+            position: absolute;
+            background-color: #f0f0f5;
+            color: #2c2c2e;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 10;
+            max-width: 200px;
+            font-size: 0.75rem;
+            line-height: 1.25;
+        }
+
+        #help:focus + #info {
+            display: block;
+        }
+        .share {
+            font-size: 24px;
+            color: white;
+        }
+        
+        .error {
+            color: #ff4d4d;
+            font-size: 12px;
+            margin-left: 5px;
+            display: none;
+        }
+        
+        .ccb {
+            color: #0b0c10;
+            border-radius: 8px;
+        }
+        
+        .icon {
+            color: #f39c12;
+            padding: 10px;
+            font-size: 80px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-ios-bg to-white min-h-screen flex flex-col font-sans text-ios-text">
+    <!-- Header -->
+    <header class="bg-glass glass-effect sticky top-0 z-50 border-b border-ios-border/50">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="h-16 flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-brand-blue to-brand-indigo text-transparent bg-clip-text">
+                        FZapify
+                    </h1>
+                </div>
+                <div class="text-ios-secondary text-sm hidden sm:block">
+                    Powered by <span class="font-medium text-brand-blue">ZishIntel</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-6 sm:px-6 lg:px-8 max-w-5xl">
+        <div class="grid lg:grid-cols-2 gap-6">
+            <!-- Form Section -->
+            <div class="bg-ios-card rounded-2xl shadow-ios-medium p-6 space-y-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold">FZapify Setup</h2>
+                    <div class="bg-ios-bg rounded-full px-3 py-1.5 text-xs text-ios-secondary flex items-center">
+                        <i data-lucide="shield-check" class="w-3 h-3 mr-1"></i>
+                        Secure Input
+                    </div>
+                </div>
+
+                <form id="shareForm" class="space-y-5">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-ios-secondary flex items-center gap-1.5">
+                            Facebook Cookie
+                            <span class="text-red-500">*</span>
+                            <i data-lucide="help-circle" class="w-4 h-4 cursor-help" id="help"></i>
+                            <div id="info" class="hidden absolute bg-gray-200 text-gray-800 p-2 rounded shadow-lg transition duration-300">
+                                <p>Paste your copied cookie. You can get cookies in FB Cookies Getter app. </p>
+                            </div>
+                        </label>
+                        <div class="relative group">
+                            <textarea 
+                                id="cookie" 
+                                name="cookie"
+                                rows="3" 
+                                class="form-input w-full px-4 py-3 bg-ios-bg border-2 border-transparent rounded-xl focus:ring-0 focus:border-brand-blue transition-all resize-none outline-none shadow-ios-inner"
+                                placeholder="Paste your Facebook cookie"
+                            ></textarea>
+                            <div class="absolute bottom-3 right-3 text-ios-secondary opacity-50">
+                                <i data-lucide="shield-check" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+                        <div class="error" id="cookieError">Missing cookie input.</div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-ios-secondary">
+                            Public Post URL<span class="text-red-500 ml-1">*</span>
+                        </label>
+                        <div class="relative">
+                            <input 
+                                type="url" 
+                                id="url" 
+                                name="url"
+                                class="form-input w-full h-11 px-4 pl-11 bg-ios-bg border-2 border-transparent rounded-xl focus:ring-0 focus:border-brand-blue transition-all shadow-ios-inner outline-none"
+                                placeholder="https://facebook.com/..."
+                            >
+                            <div class="absolute left-3 top-1/2 -translate-y-1/2 text-ios-secondary opacity-50">
+                                <i data-lucide="link-2" class="w-5 h-5"></i>
+                            </div>
+                        </div>
+                        <div class="error" id="urlError">URL is missing.</div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-ios-secondary">
+                                Share Amount Limit<span class="text-red-500 ml-1">*</span>
+                            </label>
+                            <div class="relative">
+                                <input 
+                                    type="number" 
+                                    id="amount" 
+                                    name="amount"
+                                    min="1" 
+                                    max="50000" 
+                                    class="form-input w-full h-11 px-4 pl-11 bg-ios-bg border-2 border-transparent rounded-xl focus:ring-0 focus:border-brand-blue transition-all shadow-ios-inner outline-none"
+                                    placeholder="1-50000"
+                                >
+                                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-ios-secondary opacity-50">
+                                    <i data-lucide="repeat" class="w-5 h-5"></i>
+                                </div>
+                            </div>
+                            <div class="error" id="amountError">Missing amount input.</div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-ios-secondary">
+                                Interval (s)<span class="text-red-500 ml-1">*</span>
+                            </label>
+                            <div class="relative">
+                                <input 
+                                    type="number" 
+                                    id="interval" 
+                                    name="interval"
+                                    min="1" 
+                                    max="60" 
+                                    step="0.1" 
+                                    class="form-input w-full h-11 px-4 pl-11 bg-ios-bg border-2 border-transparent rounded-xl focus:ring-0 focus:border-brand-blue transition-all shadow-ios-inner outline-none"
+                                    placeholder="1-60"
+                                >
+                                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-ios-secondary opacity-50">
+                                    <i data-lucide="clock" class="w-5 h-5"></i>
+                                </div>
+                            </div>
+                            <div class="error" id="intervalError">Missing interval input.</div>
+                        </div>
+                    </div>
+
+                    <button 
+                        type="submit" 
+                        class="w-full bg-gradient-to-r from-brand-blue to-brand-indigo text-white h-12 px-4 rounded-xl hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 focus:ring-2 focus:ring-brand-blue/50"
+                    >
+                        <i data-lucide="play" class="w-5 h-5"></i>
+                        Start Sharing
+                    </button>
+                </form>
+
+                <div id="result" class="text-center"></div>
+            </div>
+
+            <!-- Sessions Section -->
+            <div class="space-y-4">
+                <div class="bg-ios-card rounded-2xl shadow-ios-medium p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-semibold flex items-center gap-2">
+                            <i data-lucide="activity" class="w-5 h-5 text-brand-blue"></i>
+                            Active Sessions
+                        </h2>
+                        <div class="bg-green-100 text-green-600 rounded-full px-3 py-1.5 text-xs flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                            Live
+                        </div>
+                    </div>
+                    <div id="sessions" class="space-y-3 max-h-[calc(100vh-20rem)] overflow-y-auto custom-scrollbar pr-2"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-glass glass-effect py-4 text-center text-ios-secondary text-sm border-t border-ios-border/50 mt-auto">
+        <p class="font-medium">&copy; <span id="year"></span> FZapify. All rights reserved.</p>
+        <p class="text-xs mt-1 opacity-75">Powered by Zyte Intel</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+        
+        const helpIcon = document.getElementById('help');
+        const infoBox = document.getElementById('info');
+        
+        let isInfoVisible = false;
+
+        helpIcon.addEventListener('click', function(event) {
+            event.stopPropagation();
+            if (!isInfoVisible) {
+                infoBox.style.display = 'block';
+                isInfoVisible = true;
+            }
+        });
+
+        document.addEventListener('touchstart', function(event) {
+            if (isInfoVisible && event.target !== helpIcon && !infoBox.contains(event.target)) {
+                infoBox.style.display = 'none';
+                isInfoVisible = false;
+            }
+        });
+
+        // Prevent hiding when clicking inside the info box
+        infoBox.addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+
+        document.getElementById('shareForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Initialize validation
+            let isValid = true;
+
+            // Define the fields to validate
+            const fields = ['cookie', 'url', 'amount', 'interval'];
+
+            // Loop through fields and validate
+            fields.forEach((field) => {
+                const input = document.getElementById(field);
+                const errorElement = document.getElementById(`${field}Error`);
+
+                if (!input.value.trim()) {
+                    isValid = false;
+                    errorElement.style.display = 'block'; // Show error message
+                } else {
+                    errorElement.style.display = 'none'; // Hide error message
+                }
+            });
+
+            // Stop if form is invalid
+            if (!isValid) return;
+
+            // Proceed with submission
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `
+                <div class="flex items-center justify-center gap-2 text-brand-blue">
+                    <i data-lucide="loader-2" class="animate-spin w-5 h-5"></i>
+                    Processing Request...
+                </div>
+            `;
+
+            try {
+                const response = await axios.post('/submit', {
+                    cookie: document.getElementById('cookie').value,
+                    url: document.getElementById('url').value,
+                    amount: parseInt(document.getElementById('amount').value),
+                    interval: parseFloat(document.getElementById('interval').value)
+                });
+
+                resultDiv.innerHTML = `
+                    <div class="bg-green-50 text-green-600 rounded-xl p-3 flex items-center justify-center gap-2">
+                        <i data-lucide="check-circle" class="w-5 h-5"></i>
+                        Sharing started! Session: ${response.data.session_id}
+                    </div>
+                `;
+                fetchSessions();
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="bg-red-50 text-red-600 rounded-xl p-3 flex items-center justify-center gap-2">
+                        <i data-lucide="alert-circle" class="w-5 h-5"></i>
+                        ${error.response ? error.response.data.detail : error.message}
+                    </div>
+                `;
+            }
+        });
+
+        async function fetchSessions() {
+            try {
+                const response = await axios.get('/total-sessions');
+                const sessionsDiv = document.getElementById('sessions');
+                
+                if (response.data.length === 0) {
+                    sessionsDiv.innerHTML = `
+                        <div class="bg-ios-bg/50 rounded-xl p-4 text-center text-ios-secondary flex items-center justify-center gap-2">
+                            <i data-lucide="server-off" class="w-5 h-5"></i>
+                            No active sessions
+                        </div>
+                    `;
+                } else {
+                    sessionsDiv.innerHTML = response.data.map(session => `
+                        <div class="bg-ios-bg/50 rounded-xl p-4 hover:bg-ios-bg transition-colors">
+                            <div class="flex justify-between items-center mb-3">
+                                <div class="flex items-center gap-2">
+                                    <div class="bg-brand-blue/10 p-1.5 rounded-lg">
+                                        <i data-lucide="server" class="w-4 h-4 text-brand-blue"></i>
+                                    </div>
+                                    <span class="font-medium">Session #${session.session}</span>
+                                </div>
+                                <span class="text-xs bg-white px-2 py-1 rounded-md text-ios-secondary">${session.id}</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="space-y-1">
+                                    <span class="text-xs text-ios-secondary">Target URL</span>
+                                    <div class="truncate text-sm">${session.url}</div>
+                                </div>
+                                <div class="space-y-1">
+                                    <span class="text-xs text-ios-secondary">Progress</span>
+                                    <div class="flex items-center gap-2">
+                                        <div class="flex-1 bg-gray-200 rounded-full h-1.5">
+                                            <div class="bg-brand-blue rounded-full h-1.5 transition-all duration-300" style="width: ${(session.count/session.target)*100}%"></div>
+                                        </div>
+                                        <span class="text-xs font-medium">${session.count}/${session.target}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                lucide.createIcons();
+            } catch (error) {
+                console.error('Error fetching sessions:', error);
+            }
+        }
+
+        fetchSessions();
+        setInterval(fetchSessions, 1000);
+        document.getElementById("year").textContent = new Date().getUTCFullYear();
+    </script>
+</body>
+</html>
+
